@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import CourseSidebar from "@/components/courses/CourseSidebar";
 import TaskSidebar from "../Task/TaskSidebar";
 
 type AdminShellProps = {
@@ -14,10 +15,19 @@ type AdminShellProps = {
 export default function AdminShell({ children }: AdminShellProps) {
   const pathname = usePathname();
   const isTasksRoute = pathname.startsWith("/admin/tasks");
+  const isCoursesRoute = pathname.startsWith("/admin/courses");
+
+  const sidebar = isTasksRoute ? (
+    <TaskSidebar />
+  ) : isCoursesRoute ? (
+    <CourseSidebar />
+  ) : (
+    <Sidebar />
+  );
 
   return (
     <div className="min-h-screen flex bg-background text-on-surface">
-      {isTasksRoute ? <TaskSidebar /> : <Sidebar />}
+      {sidebar}
 
       <div className="flex-1 min-w-0 flex flex-col">
         <Topbar />

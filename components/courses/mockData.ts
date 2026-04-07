@@ -1,5 +1,93 @@
 import type { Course } from "./types";
 
+export type CourseListStatus = "Active" | "Draft";
+
+export type CourseManagementListItem = {
+  id: string;
+  title: string;
+  code: string;
+  createdLabel: string;
+  category: string;
+  status: CourseListStatus;
+  students: number;
+  rating: number | null;
+  iconKey: "biotech" | "terminal" | "history";
+};
+
+export type CourseManagementFeaturedPath = {
+  badgeLabel: string;
+  title: string;
+  description: string;
+  progressPercent: number;
+  progressWidthClassName: string;
+  imageSrc: string;
+  imageAlt: string;
+};
+
+export type CourseManagementSideCard = {
+  title: string;
+  description: string;
+  studentsLabel: string;
+};
+
+export const COURSE_MANAGEMENT_FEATURED_PATH: CourseManagementFeaturedPath = {
+  badgeLabel: "TRENDING",
+  title: "Quantum Mechanics Foundations",
+  description:
+    "Advanced theoretical framework covering wave-particle duality and Schrödinger equations.",
+  progressPercent: 68,
+  progressWidthClassName: "w-[68%]",
+  imageSrc:
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuD4VR85jgs3Q4aMe4g7sBoWmSwmNdKZx63miTw3ilExH02gtKnmZCh3pQGhKPM1BVZXANb7s4J4uM3mbdgv2WtnSA37uxPWjjJ4bdU7POQtTTuvL95Xpv05wraQPny0R3TNqrKNqsFAgsrxyOOHlPas6NIK1vljH3te7MUDXsZTWw7o4uASBYxAemUlRY03sLptsgTkMXSGKJF8pos-usEUTP9wfyVZPrfCRaF6lSwKIXncFkMDEDdgHTsrh_DoyvwHTRcJ8jvfc4Pf",
+  imageAlt:
+    "Abstract 3D visualization of atomic particles and wave functions with indigo and teal lines",
+};
+
+export const COURSE_MANAGEMENT_SIDE_CARD: CourseManagementSideCard = {
+  title: "Linear Algebra I",
+  description:
+    "Matrices, vector spaces, and linear transformations for engineers.",
+  studentsLabel: "84 Students Enrolled",
+};
+
+export const COURSE_MANAGEMENT_TOTAL_COURSES = 42;
+
+export const COURSE_MANAGEMENT_COURSES: CourseManagementListItem[] = [
+  {
+    id: "course-modern-astrophysics",
+    title: "Modern Astrophysics",
+    code: "AST-405",
+    createdLabel: "Created 12 Oct",
+    category: "Sciences",
+    status: "Active",
+    students: 1240,
+    rating: 4.9,
+    iconKey: "biotech",
+  },
+  {
+    id: "course-computational-physics",
+    title: "Computational Physics",
+    code: "CP-301",
+    createdLabel: "Created 05 Sep",
+    category: "Technology",
+    status: "Active",
+    students: 856,
+    rating: 4.7,
+    iconKey: "terminal",
+  },
+  {
+    id: "course-history-of-science",
+    title: "History of Science",
+    code: "HIS-102",
+    createdLabel: "Created 20 Aug",
+    category: "Humanities",
+    status: "Draft",
+    students: 0,
+    rating: null,
+    iconKey: "history",
+  },
+];
+
 const BASE_COURSES: Course[] = [
   {
     id: "course-quantum-foundations",

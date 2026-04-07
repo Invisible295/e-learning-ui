@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, Settings } from "lucide-react";
+import { Bell, Search, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
@@ -31,20 +31,38 @@ export default function Topbar() {
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={
-                  pathname === item.href
-                    ? "border-b-2 border-indigo-600 pb-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400"
-                    : "text-sm font-medium text-slate-500 transition hover:text-indigo-500 dark:text-slate-400"
-                }
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+              const linkClassName = isActive
+                ? "border-b-2 border-indigo-600 pb-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400"
+                : "text-sm font-medium text-slate-500 transition hover:text-indigo-500 dark:text-slate-400";
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={linkClassName}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
+        </div>
+
+        <div className="hidden flex-1 justify-center md:flex">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="relative w-full max-w-md"
+          >
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="search"
+              aria-label="Search"
+              placeholder="Search..."
+              className="h-9 w-full rounded-full border border-slate-200 bg-white/70 pl-9 pr-4 text-sm text-slate-700 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-indigo-200 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-200"
+            />
+          </form>
         </div>
 
         <div className="flex items-center gap-3 md:gap-4">
