@@ -17,7 +17,7 @@ const TASK_NAV_ITEMS = [
   { href: "/admin/tasks/list", label: "Task List", icon: ListChecks },
   { href: "/admin/tasks", label: "Schedule", icon: CalendarDays },
   { href: "#", label: "Resources", icon: FolderOpen },
-  { href: "#", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/tasks/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export default function TaskSidebar() {
