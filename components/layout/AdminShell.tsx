@@ -16,6 +16,7 @@ type AdminShellProps = {
 export default function AdminShell({ children }: AdminShellProps) {
   const pathname = usePathname();
   const isTasksRoute = pathname.startsWith("/admin/tasks");
+  const isTaskMemberRoute = pathname.startsWith("/admin/tasks/members");
   const isCoursesRoute = pathname.startsWith("/admin/courses");
   const isCreateCourseRoute = pathname.startsWith(
     "/admin/courses/create-course",
@@ -24,15 +25,16 @@ export default function AdminShell({ children }: AdminShellProps) {
     "/admin/class-management/create-class",
   );
 
-  const sidebar = isCreateClassRoute ? null : isTasksRoute ? (
-    <TaskSidebar />
-  ) : isCreateCourseRoute ? (
-    <CourseCreatorSidebar />
-  ) : isCoursesRoute ? (
-    <CourseSidebar />
-  ) : (
-    <Sidebar />
-  );
+  const sidebar =
+    isCreateClassRoute ? null : isTaskMemberRoute ? null : isTasksRoute ? (
+      <TaskSidebar />
+    ) : isCreateCourseRoute ? (
+      <CourseCreatorSidebar />
+    ) : isCoursesRoute ? (
+      <CourseSidebar />
+    ) : (
+      <Sidebar />
+    );
 
   return (
     <div className="min-h-screen flex bg-background text-on-surface">
