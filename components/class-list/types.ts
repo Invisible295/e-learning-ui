@@ -31,6 +31,7 @@ export type ClassListHeaderData = {
   title: string;
   leadInstructorName: string;
   leadInstructorAvatarUrl: string;
+  membersCount?: number;
 };
 
 export type ClassListStatsData = {

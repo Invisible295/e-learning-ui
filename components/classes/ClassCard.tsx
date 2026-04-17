@@ -75,12 +75,21 @@ export default function ClassCard({ item }: ClassCardProps) {
           </span>
         </div>
 
-        <Link
-          href={`/class/classes/${item.id}/members`}
-          className="cursor-pointer rounded-full bg-indigo-700 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-indigo-200 transition-all hover:-translate-y-0.5 hover:bg-indigo-800 active:scale-95"
-        >
-          View Members
-        </Link>
+        <div className="flex flex-col items-end gap-2">
+          <Link
+            href={`/ai-insights/classes/${item.id}`}
+            className="cursor-pointer rounded-full border border-indigo-200 bg-white px-5 py-2.5 text-sm font-bold text-indigo-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-indigo-50 active:scale-95"
+          >
+            AI Insight
+          </Link>
+
+          <Link
+            href={`/class/classes/${item.id}/members`}
+            className="cursor-pointer rounded-full bg-indigo-700 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-indigo-200 transition-all hover:-translate-y-0.5 hover:bg-indigo-800 active:scale-95"
+          >
+            View Members
+          </Link>
+        </div>
       </div>
     </Card>
   );

@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import BulkActionBar from "./BulkActionBar";
+import MemberDetailDrawer from "./MemberDetailDrawer";
 import MembersFilters, { type MembersFiltersValue } from "./MembersFilters";
 import MembersPagination from "./MembersPagination";
 import MembersTable from "./MembersTable";
@@ -16,12 +18,19 @@ function clampProgress(value: number) {
 }
 
 export default function ClassMembersClient({
+  classId,
+  basePath,
+  restore,
   members,
   totalMembers,
 }: {
+  classId: string;
+  basePath: string;
+  restore?: boolean;
   members: ClassListMember[];
   totalMembers?: number;
 }) {
+  const router = useRouter();
   const [data, setData] = useState<ClassListMember[]>(() =>
     members.map((m) => ({ ...m, progressPct: clampProgress(m.progressPct) })),
   );
@@ -34,6 +43,97 @@ export default function ClassMembersClient({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+  const [activeMemberId, setActiveMemberId] = useState<string | null>(null);
+
+  const storageKey = useMemo(
+    () => `e-learning-ui:class-members:${classId}`,
+    [classId],
+  );
+
+  const persistReturnState = useCallback(
+    (nextActiveMemberId: string | null) => {
+      if (typeof window === "undefined") return;
+      const payload = {
+        filters,
+        sortDir,
+        page,
+        selectedIds: Array.from(selectedIds),
+        activeMemberId: nextActiveMemberId,
+        scrollY: window.scrollY,
+        ts: Date.now(),
+      };
+
+      try {
+        window.sessionStorage.setItem(storageKey, JSON.stringify(payload));
+      } catch {
+        // ignore
+      }
+    },
+    [filters, page, selectedIds, sortDir, storageKey],
+  );
+
+  useEffect(() => {
+    if (!restore) return;
+    if (typeof window === "undefined") return;
+
+    let raw: string | null = null;
+    try {
+      raw = window.sessionStorage.getItem(storageKey);
+    } catch {
+      raw = null;
+    }
+
+    if (!raw) {
+      router.replace(basePath, { scroll: false });
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as {
+        filters?: MembersFiltersValue;
+        sortDir?: "asc" | "desc";
+        page?: number;
+        selectedIds?: string[];
+        activeMemberId?: string | null;
+        scrollY?: number;
+      };
+
+      if (parsed.filters) setFilters(parsed.filters);
+      if (parsed.sortDir) setSortDir(parsed.sortDir);
+      if (typeof parsed.page === "number") setPage(parsed.page);
+      if (Array.isArray(parsed.selectedIds))
+        setSelectedIds(new Set(parsed.selectedIds));
+
+      // Restore scroll, then restore the drawer open state.
+      const scrollTarget =
+        typeof parsed.scrollY === "number" ? parsed.scrollY : 0;
+      const restoreActive = parsed.activeMemberId ?? null;
+
+      const raf1 = window.requestAnimationFrame(() => {
+        const raf2 = window.requestAnimationFrame(() => {
+          window.scrollTo({ top: scrollTarget, left: 0, behavior: "auto" });
+          if (restoreActive) setActiveMemberId(restoreActive);
+        });
+        return () => window.cancelAnimationFrame(raf2);
+      });
+      // eslint-disable-next-line consistent-return
+      return () => window.cancelAnimationFrame(raf1);
+    } catch {
+      // ignore
+    } finally {
+      try {
+        window.sessionStorage.removeItem(storageKey);
+      } catch {
+        // ignore
+      }
+      router.replace(basePath, { scroll: false });
+    }
+  }, [basePath, restore, router, storageKey]);
+
+  const activeMember = useMemo(() => {
+    if (!activeMemberId) return null;
+    return data.find((m) => m.id === activeMemberId) ?? null;
+  }, [activeMemberId, data]);
 
   const filtered = useMemo(() => {
     const q = filters.query.trim().toLowerCase();
@@ -136,6 +236,8 @@ export default function ClassMembersClient({
     clearSelection();
   }
 
+  const drawerOpen = Boolean(activeMember);
+
   return (
     <>
       <MembersFilters
@@ -154,6 +256,7 @@ export default function ClassMembersClient({
         onToggleSelectAll={toggleSelectAll}
         onRoleChange={updateRole}
         onStatusToggle={toggleStatus}
+        onMemberClick={(id) => setActiveMemberId(id)}
       />
 
       <MembersPagination
@@ -171,6 +274,20 @@ export default function ClassMembersClient({
         onDeactivate={deactivateSelected}
         onChangeRole={changeRoleSelected}
       />
+
+      {drawerOpen ? (
+        <MemberDetailDrawer
+          key={activeMember?.id ?? "member-drawer"}
+          classId={classId}
+          onEditProfile={(memberId) => {
+            persistReturnState(memberId);
+            router.push(`/members/classes/${classId}/members/${memberId}/edit`);
+          }}
+          open
+          member={activeMember}
+          onClose={() => setActiveMemberId(null)}
+        />
+      ) : null}
     </>
   );
 }

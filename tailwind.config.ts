@@ -56,6 +56,10 @@ const config: Config = {
         "on-primary-fixed-variant": "#3323cc",
         "primary-fixed-dim": "#c3c0ff",
       },
+      zIndex: {
+        100: "100",
+        110: "110",
+      },
       fontFamily: {
         headline: ["var(--font-inter)", "Inter", "ui-sans-serif", "system-ui"],
         body: ["var(--font-inter)", "Inter", "ui-sans-serif", "system-ui"],

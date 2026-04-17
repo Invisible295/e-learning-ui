@@ -31,7 +31,7 @@ export default function BulkActionBar({
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-10 left-1/2 z-[100] -translate-x-1/2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="fixed bottom-10 left-1/2 z-100 -translate-x-1/2 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-6 rounded-full border border-indigo-800/30 bg-indigo-950 px-6 py-4 text-white shadow-2xl shadow-indigo-900/40">
         <div className="flex items-center gap-3 border-r border-white/15 pr-6">
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">

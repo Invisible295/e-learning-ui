@@ -15,6 +15,7 @@ export default async function ClassListPage({
   const sp = (await searchParams) ?? {};
   const state = Array.isArray(sp.state) ? sp.state[0] : sp.state;
   const empty = Array.isArray(sp.empty) ? sp.empty[0] : sp.empty;
+  const restore = Array.isArray(sp.restore) ? sp.restore[0] : sp.restore;
   const forceEmpty = state === "empty" || empty === "1";
 
   const members = forceEmpty ? [] : CLASS_LIST_MEMBERS;
@@ -26,7 +27,13 @@ export default async function ClassListPage({
       <ClassListStats data={CLASS_LIST_STATS} />
 
       <section className="overflow-hidden rounded-3xl bg-white shadow-sm">
-        <ClassMembersClient members={members} totalMembers={totalMembers} />
+        <ClassMembersClient
+          classId={CLASS_LIST_HEADER.classId}
+          basePath="/class/class-list"
+          restore={restore === "1"}
+          members={members}
+          totalMembers={totalMembers}
+        />
       </section>
     </div>
   );

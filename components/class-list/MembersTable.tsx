@@ -22,6 +22,7 @@ export default function MembersTable({
   onToggleSelectAll,
   onRoleChange,
   onStatusToggle,
+  onMemberClick,
 }: {
   members: ClassListMember[];
   selectedIds: Set<string>;
@@ -29,6 +30,7 @@ export default function MembersTable({
   onToggleSelectAll: (checked: boolean) => void;
   onRoleChange: (id: string, role: MemberRole) => void;
   onStatusToggle: (id: string) => void;
+  onMemberClick: (id: string) => void;
 }) {
   const allSelected =
     members.length > 0 && members.every((m) => selectedIds.has(m.id));
@@ -91,12 +93,14 @@ export default function MembersTable({
               return (
                 <tr
                   key={member.id}
-                  className={`group transition-colors hover:bg-gray-50/50 ${selected ? "bg-indigo-50/30" : ""}`}
+                  onClick={() => onMemberClick(member.id)}
+                  className={`group cursor-pointer transition-colors hover:bg-gray-50/50 ${selected ? "bg-indigo-50/30" : ""}`}
                 >
                   <td className="px-6 py-5">
                     <input
                       type="checkbox"
                       checked={selected}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={() => onToggleSelect(member.id)}
                       aria-label={`Select ${member.name}`}
                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500/20"
@@ -135,6 +139,7 @@ export default function MembersTable({
                   <td className="px-6 py-5">
                     <select
                       value={member.role}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={(e) =>
                         onRoleChange(member.id, e.target.value as MemberRole)
                       }
@@ -151,12 +156,15 @@ export default function MembersTable({
                     <div className="flex justify-center">
                       <button
                         type="button"
-                        onClick={() => onStatusToggle(member.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onStatusToggle(member.id);
+                        }}
                         aria-label={`Toggle status for ${member.name}`}
                         className={
                           member.isActive
-                            ? "relative h-5 w-10 rounded-full bg-green-500 transition-all"
-                            : "relative h-5 w-10 rounded-full bg-gray-300 transition-all"
+                            ? "relative h-5 w-10 cursor-pointer rounded-full bg-green-500 transition-all"
+                            : "relative h-5 w-10 cursor-pointer rounded-full bg-gray-300 transition-all"
                         }
                       >
                         <span
@@ -205,8 +213,9 @@ export default function MembersTable({
                   <td className="px-6 py-5 text-right">
                     <button
                       type="button"
+                      onClick={(e) => e.stopPropagation()}
                       aria-label={`More actions for ${member.name}`}
-                      className="text-gray-300 transition-colors group-hover:text-indigo-500"
+                      className="cursor-pointer text-gray-300 transition-colors group-hover:text-indigo-500"
                     >
                       <MoreVertical className="h-5 w-5" />
                     </button>
