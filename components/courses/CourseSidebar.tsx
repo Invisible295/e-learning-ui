@@ -40,6 +40,7 @@ const RESERVED_COURSE_SEGMENTS = new Set([
   "my-progress",
   "performance",
   "discussions",
+  "instructors",
 ]);
 
 function getCourseIdFromPathname(pathname: string) {
@@ -63,6 +64,7 @@ function buildNavGroups(params: {
   myProgressHref: string;
   performanceHref: string;
   discussionsHref: string;
+  instructorsHref: string;
 }): NavGroup[] {
   const {
     overviewHref,
@@ -74,6 +76,7 @@ function buildNavGroups(params: {
     myProgressHref,
     performanceHref,
     discussionsHref,
+    instructorsHref,
   } = params;
 
   return [
@@ -158,9 +161,11 @@ function buildNavGroups(params: {
             discussionsHref !== "#" && pathname.startsWith(discussionsHref),
         },
         {
-          href: "#",
+          href: instructorsHref,
           label: "Instructors",
           icon: GraduationCap,
+          isActive: (pathname) =>
+            instructorsHref !== "#" && pathname.startsWith(instructorsHref),
         },
       ],
     },
@@ -215,6 +220,12 @@ export default function CourseSidebar() {
       ? `/admin/courses/${defaultCourseId}/discussions`
       : "/admin/courses";
 
+  const instructorsHref = courseId
+    ? `${overviewHref}/instructors`
+    : defaultCourseId
+      ? `/admin/courses/${defaultCourseId}/instructors`
+      : "/admin/courses";
+
   const navGroups = buildNavGroups({
     overviewHref,
     curriculumHref,
@@ -225,6 +236,7 @@ export default function CourseSidebar() {
     myProgressHref,
     performanceHref,
     discussionsHref,
+    instructorsHref,
   });
 
   return (
