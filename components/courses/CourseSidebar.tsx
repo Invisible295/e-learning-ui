@@ -29,7 +29,13 @@ type NavGroup = {
   items: NavItem[];
 };
 
-const RESERVED_COURSE_SEGMENTS = new Set(["create-course", "curriculum"]);
+const RESERVED_COURSE_SEGMENTS = new Set([
+  "create-course",
+  "curriculum",
+  "resources",
+  "continue-learning",
+  "assignments",
+]);
 
 function getCourseIdFromPathname(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
@@ -45,8 +51,17 @@ function getCourseIdFromPathname(pathname: string) {
 function buildNavGroups(params: {
   overviewHref: string;
   curriculumHref: string;
+  resourcesHref: string;
+  continueLearningHref: string;
+  assignmentsHref: string;
 }): NavGroup[] {
-  const { overviewHref, curriculumHref } = params;
+  const {
+    overviewHref,
+    curriculumHref,
+    resourcesHref,
+    continueLearningHref,
+    assignmentsHref,
+  } = params;
 
   return [
     {
@@ -65,9 +80,11 @@ function buildNavGroups(params: {
           isActive: (pathname) => pathname.startsWith(curriculumHref),
         },
         {
-          href: "#",
+          href: resourcesHref,
           label: "Resources",
           icon: FolderOpen,
+          isActive: (pathname) =>
+            resourcesHref !== "#" && pathname.startsWith(resourcesHref),
         },
       ],
     },
@@ -75,14 +92,19 @@ function buildNavGroups(params: {
       title: "Learning",
       items: [
         {
-          href: "#",
+          href: continueLearningHref,
           label: "Continue Learning",
           icon: PlayCircle,
+          isActive: (pathname) =>
+            continueLearningHref !== "#" &&
+            pathname.startsWith(continueLearningHref),
         },
         {
-          href: "#",
+          href: assignmentsHref,
           label: "Assignments",
           icon: ClipboardList,
+          isActive: (pathname) =>
+            assignmentsHref !== "#" && pathname.startsWith(assignmentsHref),
         },
         {
           href: "#",
@@ -135,7 +157,25 @@ export default function CourseSidebar() {
     ? `${overviewHref}/curriculum`
     : "/admin/courses/curriculum";
 
-  const navGroups = buildNavGroups({ overviewHref, curriculumHref });
+  const resourcesHref = courseId
+    ? `${overviewHref}/resources`
+    : "/admin/courses/resources";
+
+  const continueLearningHref = courseId
+    ? `${overviewHref}/continue-learning`
+    : "/admin/courses/continue-learning";
+
+  const assignmentsHref = courseId
+    ? `${overviewHref}/assignments`
+    : "/admin/courses/assignments";
+
+  const navGroups = buildNavGroups({
+    overviewHref,
+    curriculumHref,
+    resourcesHref,
+    continueLearningHref,
+    assignmentsHref,
+  });
 
   return (
     <aside className="sticky top-16 z-40 hidden h-[calc(100vh-4rem)] w-72 shrink-0 overflow-hidden bg-[#f7f7fb] px-5 py-6 md:flex md:flex-col dark:bg-slate-900">
